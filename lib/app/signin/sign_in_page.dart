@@ -10,13 +10,18 @@ class SignInPage extends StatelessWidget {
 
   final AuthBase auth;
 
-  void _signInWithGoogle() {
-    print("Login Google");
+  Future<void> _signInWithGoogle() async {
+    try {
+      await auth.signInWithGoogle();
+    } catch (e) {
+      print(e.toString());
+    }
   }
 
   void _signInWithFacebook() {
     print("Login Face");
   }
+
   void _signInWithEmail() {
     print("Login Email");
   }
