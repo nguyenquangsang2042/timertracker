@@ -1,9 +1,34 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:timer_tracker/app/signin/sign_in_button.dart';
-import 'package:timer_tracker/common_widgets/custom_elevated_button.dart';
+import 'package:timer_tracker/services/auth.dart';
 
 class SignInPage extends StatelessWidget {
-  const SignInPage({super.key});
+  SignInPage({super.key, required this.auth, required this.onSignin});
+
+  final void Function(User) onSignin;
+  final AuthBase auth;
+
+  void _signInWithGoogle() {
+    print("Login Google");
+  }
+
+  void _signInWithFacebook() {
+    print("Login Face");
+  }
+
+  void _signInWithEmail() {
+    print("Login Email");
+  }
+
+  Future<void> _goAnonymous() async {
+    try {
+      final userCredentials = await auth.signInAnonymously();
+      onSignin(userCredentials!);
+    } catch (e) {
+      print(e);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -79,21 +104,5 @@ class SignInPage extends StatelessWidget {
             ),
           ]),
     );
-  }
-
-  void _signInWithGoogle() {
-    print("Login Google");
-  }
-
-  void _signInWithFacebook() {
-    print("Login Face");
-  }
-
-  void _signInWithEmail() {
-    print("Login Email");
-  }
-  void _goAnonymous()
-  {
-    print("Login Anonymous");
   }
 }

@@ -1,8 +1,11 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:timer_tracker/app/signin/sign_in_page.dart';
+import 'package:timer_tracker/app/landing_page.dart';
+import 'package:timer_tracker/services/auth.dart';
 
-void main()
-{
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   runApp(const MyApp());
 }
 
@@ -14,7 +17,9 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       theme: ThemeData(primarySwatch: Colors.indigo),
       title: "Timer tracker",
-      home:const SignInPage(),
-    ) ;
+      home: LandingPage(
+        auth: Auth(),
+      ),
+    );
   }
 }

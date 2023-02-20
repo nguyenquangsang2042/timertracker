@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "563784063008",
+    "project_id": "timer-tracker-7288c",
+    "storage_bucket": "timer-tracker-7288c.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:563784063008:android:2ef5022dde669896e4c445",
+        "android_client_info": {
+          "package_name": "com.sangnq2903.timer_tracker"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "563784063008-p9fb416jutne5g84pqbgmfq49h4kffj1.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.sangnq2903.timer_tracker",
+            "certificate_hash": "67aea56a91c81b1eb1633a7240bb74c60b26c73b"
+          }
+        },
+        {
+          "client_id": "563784063008-656ugnjt2729brufkgnheh8linl47dv0.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDfCq51u8Ehj-t60pGk8u5XRTE9zz5F5Cs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "563784063008-656ugnjt2729brufkgnheh8linl47dv0.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
