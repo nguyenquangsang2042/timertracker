@@ -6,9 +6,8 @@ import 'package:timer_tracker/app/signin/sign_in_button.dart';
 import 'package:timer_tracker/services/auth.dart';
 
 class SignInPage extends StatelessWidget {
-  SignInPage({super.key, required this.auth, required this.onSignin});
+  SignInPage({super.key, required this.auth});
 
-  final void Function(User) onSignin;
   final AuthBase auth;
 
   void _signInWithGoogle() {
@@ -17,38 +16,14 @@ class SignInPage extends StatelessWidget {
 
   void _signInWithFacebook() {
     print("Login Face");
-    final controller = StreamController();
-    addLessThanFive(controller, 1);
-    addLessThanFive(controller, 2);
-    addLessThanFive(controller, 3);
-    addLessThanFive(controller, 4);
-    addLessThanFive(controller, 5);
-    controller.stream.listen((value) {
-      print(value);
-    },onError: (value){
-      print(" errro: $value");
-    }, onDone: () {
-      print("Done");
-    });
   }
-
-  // todo remove
-  void addLessThanFive(StreamController controller, int value) {
-    if (value < 5) {
-      controller.sink.add(value);
-    } else {
-      controller.sink.addError(StateError("$value is not less 5"));
-    }
-  }
-
   void _signInWithEmail() {
     print("Login Email");
   }
 
   Future<void> _goAnonymous() async {
     try {
-      final userCredentials = await auth.signInAnonymously();
-      onSignin(userCredentials!);
+      await auth.signInAnonymously();
     } catch (e) {
       print(e);
     }
