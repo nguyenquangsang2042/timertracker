@@ -26,8 +26,10 @@ class SignInPage extends StatelessWidget {
   }
 
   void _signInWithEmail(BuildContext context) {
-    Navigator.of(context).push(MaterialPageRoute(
-        fullscreenDialog: true, builder: (context) =>  EmailSignInPage(auth: auth,)));
+    Future.delayed(const Duration(milliseconds: 150),(){
+      Navigator.of(context).push(MaterialPageRoute(
+          fullscreenDialog: true, builder: (context) =>  EmailSignInPage(auth: auth,)));
+    });
   }
 
   Future<void> _goAnonymous() async {
