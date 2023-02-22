@@ -1,34 +1,25 @@
 import 'dart:async';
 
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 
 import '../../../services/auth.dart';
 
-class SignInBloc {
-  SignInBloc({required this.auth});
-
-  final StreamController<bool> _isLoadController = StreamController<bool>();
+class SignInManager {
+  SignInManager({required this.auth,required this.isLoading});
   final AuthBase auth;
-
-  Stream<bool> get isLoadStream => _isLoadController.stream;
-
-  void dispose() {
-    _isLoadController.close();
-  }
-
-  void setIsLoading(bool isLoading) => _isLoadController.add(isLoading);
+  final ValueNotifier<bool> isLoading;
 
   Future<User?> _signIn(Future<User?> signInMethod) async {
     try {
-      setIsLoading(true);
+      isLoading.value=true;
       return await signInMethod;
     } catch (e) {
       rethrow;
     } finally {
-      setIsLoading(false);
+      isLoading.value=false;
     }
   }
-
   Future<User?> signInAnonymously() async =>await _signIn(auth.signInAnonymously());
 
   Future<User?> signInWithGoogle() async =>await _signIn(auth.signInWithGoogle());

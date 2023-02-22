@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:timer_tracker/app/sign_in/string_validator.dart';
 import 'package:timer_tracker/common_widgets/form_submit_button.dart';
 
-import 'model/email_sign_in_model.dart';
+import 'model/email_sign_in_change_model.dart';
 class EmailSignInFormStateful extends StatefulWidget with EmailAndPasswordValidators {
   EmailSignInFormStateful({Key? key}) : super(key: key);
 

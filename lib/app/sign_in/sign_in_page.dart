@@ -2,7 +2,7 @@ import 'dart:async';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:timer_tracker/app/sign_in/bloc/sign_in_bloc.dart';
+import 'package:timer_tracker/app/sign_in/bloc/sign_in_manager.dart';
 import 'package:timer_tracker/app/sign_in/email_sign_in_page.dart';
 import 'package:timer_tracker/app/sign_in/sign_in_button.dart';
 import 'package:timer_tracker/common_widgets/show_exception_alert_dialog.dart';
@@ -10,15 +10,22 @@ import 'package:timer_tracker/common_widgets/show_exception_alert_dialog.dart';
 import '../../services/auth.dart';
 
 class SignInPage extends StatelessWidget {
-  const SignInPage({Key? key,required this.bloc}) : super(key: key);
-  final SignInBloc bloc;
+  const SignInPage({Key? key, required this.bloc,required this.isLoading}) : super(key: key);
+  final SignInManager bloc;
+  final bool isLoading;
 
   static Widget create(BuildContext context) {
-    return Provider<SignInBloc>(
-      dispose: (_,bloc)=>bloc.dispose(),
-      create: (_) => SignInBloc(auth: Provider.of<AuthBase>(context,listen: false)),
-      child: Consumer<SignInBloc>(
-        builder: (_,bloc,__)=>SignInPage(bloc: bloc,),
+    return ChangeNotifierProvider(
+      create: (_) => ValueNotifier<bool>(false),
+      child: Consumer<ValueNotifier<bool>>(
+        builder: (_, isLoading, __) => Provider<SignInManager>(
+          create: (_) => SignInManager(
+              auth: Provider.of<AuthBase>(context, listen: false),
+              isLoading: isLoading),
+          child: Consumer<SignInManager>(
+            builder: (_, bloc, __) => SignInPage(bloc: bloc,isLoading: isLoading.value,),
+          ),
+        ),
       ),
     );
   }
@@ -58,23 +65,19 @@ class SignInPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bloc = Provider.of<SignInBloc>(context, listen: false);
+    final isLoading = Provider.of<ValueNotifier<bool>>(context);
     return Scaffold(
       appBar: AppBar(
         title: const Text("Timer Tracker"),
         elevation: 3.0,
       ),
-      body: StreamBuilder<bool>(
-        stream: bloc.isLoadStream,
-        initialData: false,
-        builder: (context, snapshot) => _buildContent(context, snapshot.data),
-      ),
+      body: _buildContent(context, isLoading.value),
       backgroundColor: Colors.grey[200],
     );
   }
 
   Widget _buildHeader(BuildContext context) {
-    if (Provider.of<SignInBloc>(context).isLoadStream == true) {
+    if (isLoading == true) {
       return const Center(
         child: CircularProgressIndicator(),
       );
