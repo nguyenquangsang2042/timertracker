@@ -1,22 +1,21 @@
-import 'package:flutter/cupertino.dart';
-
-import 'email_sign_in_form.dart';
-
 abstract class StringValidator {
-  bool isValid(String value);
+  bool isValid(String? value);
 }
 
 class NonEmptyStringValidator implements StringValidator {
   @override
-  bool isValid(String value) {
-    // TODO: implement isValid
-    return value.isNotEmpty;
+  bool isValid(String? value) {
+    if (value != null) {
+      return value.isNotEmpty;
+    } else {
+      return false;
+    }
   }
 }
 
-class EmailAndPasswordValidators  {
+class EmailAndPasswordValidators {
   final StringValidator emailValidator = NonEmptyStringValidator();
   final StringValidator passValidator = NonEmptyStringValidator();
-  final String strInValidEmail = 'Email can\'t be emplty';
-  final String strInvalidPass = 'Password can\'t be emplty';
+  final String strInValidEmail = 'Email can\'t be empty';
+  final String strInvalidPass = 'Password can\'t be empty';
 }

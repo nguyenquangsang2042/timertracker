@@ -1,19 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:timer_tracker/app/sign_in/string_validator.dart';
 import 'package:timer_tracker/common_widgets/form_submit_button.dart';
-import 'package:timer_tracker/services/auth.dart';
 
-enum EmailSignInFormType { signIn, register }
-
-class EmailSignInForm extends StatefulWidget with EmailAndPasswordValidators {
-  EmailSignInForm({Key? key, required this.auth}) : super(key: key);
-  final AuthBase auth;
+import 'model/email_sign_in_model.dart';
+class EmailSignInFormStateful extends StatefulWidget with EmailAndPasswordValidators {
+  EmailSignInFormStateful({Key? key}) : super(key: key);
 
   @override
-  State<EmailSignInForm> createState() => _EmailSignInFormState();
+  State<EmailSignInFormStateful> createState() => _EmailSignInFormStatefulState();
 }
 
-class _EmailSignInFormState extends State<EmailSignInForm> {
+class _EmailSignInFormStatefulState extends State<EmailSignInFormStateful> {
   EmailSignInFormType _formType = EmailSignInFormType.signIn;
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passController = TextEditingController();
@@ -26,37 +23,25 @@ class _EmailSignInFormState extends State<EmailSignInForm> {
   String get _pass => _passController.text;
   bool _submitted = false;
   bool _isLoading = false;
-
-  void _submit() async {
-    setState(() {
-      _submitted = true;
-      _isLoading = true;
-    });
-    try {
-      if (_formType == EmailSignInFormType.signIn) {
-        await widget.auth.signInWithEmailAndPass(_email, _pass);
-      } else {
-        await widget.auth.createAccountWithEmailAndPass(_email, _pass);
-      }
-      Navigator.of(context).pop();
-    } catch (e) {
-      print(e.toString());
-    } finally {
-      setState(() {
-        _isLoading = false;
-      });
-    }
-  }
-
   void _emailEditingCompleted() {
-    final newFocus= widget.emailValidator.isValid(_email)?_passFocusNode:_emailFocusNode;
+    final newFocus = widget.emailValidator.isValid(_email)
+        ? _passFocusNode
+        : _emailFocusNode;
     FocusScope.of(context).requestFocus(newFocus);
   }
 
   void _updateState() {
     setState(() {});
   }
-
+ @override
+  void dispose() {
+    // TODO: implement dispose
+   _emailController.dispose();
+   _passController.dispose();
+   _emailFocusNode.dispose();
+   _passFocusNode.dispose();
+    super.dispose();
+  }
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -98,10 +83,10 @@ class _EmailSignInFormState extends State<EmailSignInForm> {
           child: FormSubmitButton(
             color: submitEnable ? Colors.indigo : Colors.grey,
             text: primaryText,
-            onPressed: submitEnable && !_isLoading ? _submit : null,
+            onPressed: submitEnable && !_isLoading ? null : null,
           )),
       TextButton(
-          onPressed: !_isLoading?_toggleFormType:null,
+          onPressed: !_isLoading ? _toggleFormType : null,
           child: Text(
             secondaryText,
             style: const TextStyle(
@@ -124,7 +109,7 @@ class _EmailSignInFormState extends State<EmailSignInForm> {
       obscureText: true,
       textInputAction: TextInputAction.done,
       controller: _passController,
-      onEditingComplete: _submit,
+      onEditingComplete: null,
       onChanged: (pass) => _updateState(),
     );
   }

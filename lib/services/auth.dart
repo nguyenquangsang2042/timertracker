@@ -9,15 +9,15 @@ abstract class AuthBase {
 
   Future<User?> signInAnonymously();
 
+  Future<User?> signInWithGoogle();
+
+  Future<User?> signInWithEmailAndPass(String email, String pass);
+
+  Future<User?> createAccountWithEmailAndPass(String email, String pass);
   Future<void> signOut();
 
   Stream<User?> authStateChanges();
 
-  Future<User?> signInWithGoogle();
-
-  Future<User?> signInWithFacebook();
-  Future<User?> signInWithEmailAndPass(String email,String pass);
-  Future<User?> createAccountWithEmailAndPass(String email,String pass);
 }
 
 class Auth implements AuthBase {
@@ -62,33 +62,6 @@ class Auth implements AuthBase {
     } else {
       throw FirebaseAuthException(
           code: 'ERROR_ABORTED_BY_USER', message: 'Sign in aborted by user');
-    }
-  }
-
-  @override
-  Future<User?> signInWithFacebook() async {
-    final fb = FacebookLogin();
-    final response = await fb.logIn(permissions: [
-      FacebookPermission.publicProfile,
-      FacebookPermission.email
-    ]);
-    switch (response.status) {
-      case FacebookLoginStatus.success:
-        final accessToken = response.accessToken;
-        if (accessToken != null) {
-          final userCredential = await _firebaseAuth.signInWithCredential(
-              FacebookAuthProvider.credential(accessToken.token));
-          return userCredential.user;
-        } else {
-          throw FirebaseAuthException(
-              code: 'ACCESS_TOKEN_IS_NULL', message: 'Access token is null');
-        }
-      case FacebookLoginStatus.cancel:
-        throw FirebaseAuthException(
-            code: 'ERROR_ABORT_BY_USER', message: 'Sign in aborted by user');
-      case FacebookLoginStatus.error:
-        throw FirebaseAuthException(
-            code: 'ERROR_FB_LOGIN_FAIL', message: 'Facebook login failed');
     }
   }
   @override
