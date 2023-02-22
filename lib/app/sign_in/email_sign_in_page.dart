@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:timer_tracker/app/sign_in/bloc/email_sign_in_bloc.dart';
+import 'package:timer_tracker/app/sign_in/email_sign_in_form_bloc_based.dart';
 import 'package:timer_tracker/app/sign_in/email_sign_in_form_staful.dart';
 class EmailSignInPage extends StatelessWidget {
   const EmailSignInPage({Key? key}) : super(key: key);
@@ -22,7 +25,8 @@ class EmailSignInPage extends StatelessWidget {
                   SingleChildScrollView(
                     child: Padding(
                       padding: const EdgeInsets.all(16.0),
-                      child: EmailSignInFormStateful(),
+                      child: EmailSignInFormBlocBased.create(context),
+
                     ),
                   ),
                 ],

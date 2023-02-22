@@ -16,6 +16,8 @@ class EmailSignInBloc {
   void dispose() {
     _modelController.close();
   }
+  void updateEmail(String email)=>updateWith(email: email);
+  void updatePassword(String password)=>updateWith(pass: password);
 
   void updateWith(
       {String? email,
