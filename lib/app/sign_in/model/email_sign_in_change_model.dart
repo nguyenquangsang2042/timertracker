@@ -16,7 +16,7 @@ class EmailSignInChangeModel with EmailAndPasswordValidators ,ChangeNotifier{
       this.password = '',
       this.formType = EmailSignInFormType.signIn,
       this.isLoading = false,
-      this.submitted = false});
+      this.submitted = false}) ;
 
   void updateWith(
       {String? email,
