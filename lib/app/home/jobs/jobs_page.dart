@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:timer_tracker/app/home/jobs/add_job_page.dart';
 import 'package:timer_tracker/app/home/model/Job.dart';
 import 'package:timer_tracker/common_widgets/show_alert_dialog.dart';
 import 'package:timer_tracker/common_widgets/show_exception_alert_dialog.dart';
@@ -32,8 +33,6 @@ class JobsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final database=Provider.of<Database>(context,listen: false);
-    database.readJobs();
     return Scaffold(
       appBar: AppBar(
         title: const Text("Home page"),
@@ -50,18 +49,35 @@ class JobsPage extends StatelessWidget {
         ],
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () => _createJob(context),
+        onPressed: () => AddJobPage.show(context),
         child: const Icon(Icons.add),
       ),
+      body: _buildContext(context),
     );
   }
-
-  Future<void> _createJob(BuildContext context) async {
-    try {
-      final database = Provider.of<Database>(context, listen: false);
-      database.createJob(Job(name: "Sang1111đâsdasdas", ratePerHour: 10));
-    } on FirebaseException catch (e) {
-      showExceptionAlertDialog(context, title: "Operation fail", exception: e);
-    }
+  Widget _buildContext(BuildContext context) {
+    final database = Provider.of<Database>(context, listen: false);
+    return StreamBuilder<List<Job>>(
+      stream: database.jobsStream(),
+      builder: (context, snapshot) {
+        if (snapshot.hasData) {
+          final jobs = snapshot.data;
+          if (jobs != null) {
+            final children = jobs.map((job) => Text(job.name)).toList();
+            return Column(
+              children: children,
+            );
+          }
+        }
+        if (snapshot.hasError) {
+          return const Center(
+            child: Text("Some error"),
+          );
+        }
+        return const Center(
+          child: CircularProgressIndicator(),
+        );
+      },
+    );
   }
 }
