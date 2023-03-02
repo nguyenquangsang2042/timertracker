@@ -45,6 +45,13 @@ Future showAlertDialog(BuildContext context,
               ),
               content: Text(content),
               actions: [
+                if (cancelActionText != null)
+                  TextButton(
+                      onPressed: () => Navigator.of(context).pop(false),
+                      child: Text(
+                        cancelActionText,
+                        style: const TextStyle(color: Colors.black),
+                      )),
                 TextButton(
                     onPressed: () => Navigator.of(context).pop(true),
                     child: Text(
