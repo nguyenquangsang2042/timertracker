@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:timer_tracker/app/home/model/Job.dart';
 import 'package:timer_tracker/common_widgets/show_exception_alert_dialog.dart';
@@ -113,6 +114,9 @@ class _AddJobPageState extends State<AddJobPage> {
         focusNode: _ratePerHourNodeFocus,
         onSaved: (value) => _ratePerHour = int.parse(value!) ?? 0,
         decoration: const InputDecoration(labelText: "Rate per hour"),
+        inputFormatters: [
+          FilteringTextInputFormatter.digitsOnly
+        ],
         keyboardType: const TextInputType.numberWithOptions(
             signed: false, decimal: false),
       ),
