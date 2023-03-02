@@ -1,17 +1,23 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:timer_tracker/app/home/model/Job.dart';
+import 'package:timer_tracker/common_widgets/show_exception_alert_dialog.dart';
 import 'package:timer_tracker/services/database.dart';
 
 class AddJobPage extends StatefulWidget {
-  const AddJobPage({super.key,required this.database});
+  const AddJobPage({super.key, required this.database});
+
   final Database database;
 
   static Future<void> show(BuildContext context) async {
-    final database=Provider.of<Database>(context,listen: false);
+    final database = Provider.of<Database>(context, listen: false);
     await Navigator.of(context).push(
       MaterialPageRoute(
-          builder: (context) => AddJobPage(database: database,), fullscreenDialog: true),
+          builder: (context) => AddJobPage(
+                database: database,
+              ),
+          fullscreenDialog: true),
     );
   }
 
@@ -35,10 +41,15 @@ class _AddJobPageState extends State<AddJobPage> {
     return false;
   }
 
-  Future<void> _submit()async {
+  Future<void> _submit() async {
     if (_validateAndSaveForm()) {
-      final job=Job(name: _name!, ratePerHour: _ratePerHour!);
-      await widget.database.createJob(job);
+      try {
+        final job = Job(name: _name!, ratePerHour: _ratePerHour!);
+        await widget.database.createJob(job);
+        Navigator.of(context).pop();
+      } on FirebaseException catch (e) {
+        showExceptionAlertDialog(context, title: "Operation failed", exception: e);
+      }
     }
   }
 
@@ -85,19 +96,26 @@ class _AddJobPageState extends State<AddJobPage> {
   }
 
   List<Widget> _buildFormChildren() {
+    final _jobNameNodeFocus= FocusNode();
+    final _ratePerHourNodeFocus=FocusNode();
     return [
       TextFormField(
+        focusNode: _jobNameNodeFocus,
         decoration: const InputDecoration(labelText: "Job name"),
-        validator: (value)=>value!.isNotEmpty?null:'Name can\'t be empty',
+        validator: (value) => value!.isNotEmpty ? null : 'Name can\'t be empty',
         onSaved: (value) => _name = value,
+        textInputAction: TextInputAction.next,
+        onFieldSubmitted: (value){FocusScope.of(context).requestFocus(_ratePerHourNodeFocus);},
+
       ),
       TextFormField(
+        textInputAction: TextInputAction.done,
+        focusNode: _ratePerHourNodeFocus,
         onSaved: (value) => _ratePerHour = int.parse(value!) ?? 0,
-
         decoration: const InputDecoration(labelText: "Rate per hour"),
-        keyboardType:
-            const TextInputType.numberWithOptions(signed: false, decimal: false),
-      )
+        keyboardType: const TextInputType.numberWithOptions(
+            signed: false, decimal: false),
+      ),
     ];
   }
 }
