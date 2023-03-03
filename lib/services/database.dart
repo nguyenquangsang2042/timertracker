@@ -4,9 +4,10 @@ import 'package:timer_tracker/services/api_path.dart';
 import 'package:timer_tracker/services/firestore_service.dart';
 
 abstract class Database {
-  Future<void> createJob(Job job);
-
+  Future<void> setJob(Job job);
   Stream<List<Job>> jobsStream();
+  Future<void> deleteJob(Job job);
+
 }
 String documentIDFromCurrentDate()=>DateTime.now().toIso8601String();
 class FireStoreDatabase implements Database {
@@ -15,9 +16,12 @@ class FireStoreDatabase implements Database {
   final String uid;
   final _service=FireStoreService.instance;
   @override
-  Future<void> createJob(Job job) async =>
-      _service.setData(path: APIPath.job(uid, documentIDFromCurrentDate()), data: job.toMap());
+  Future<void> setJob(Job job) async =>
+      _service.setData(path: APIPath.job(uid, job.id), data: job.toMap());
 
   @override
-  Stream<List<Job>> jobsStream() =>_service.collectionStream(path: APIPath.jobs(uid), builder: (data)=>Job.fromMap(data));
+  Stream<List<Job>> jobsStream() =>_service.collectionStream(path: APIPath.jobs(uid), builder: (data,documentID)=>Job.fromMap(data,documentID));
+
+  @override
+  Future<void> deleteJob(Job job) => _service.deleteData(path: APIPath.job(uid, job.id));
 }
